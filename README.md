@@ -18,4 +18,4 @@ It gives 2 messages "burn it" or "nice" and also shows the percentage rating of 
 ## 📌 Contact
 Email : fms848656@gmail.com & adithyaambali17560@gmail.com
 LinkedIn : https://www.linkedin.com/in/fathima-ms-a051b6335/   &    https://www.linkedin.com/in/adithya-a-656b54306/
-Github : 
+Github : https://github.com/fms848656-art   &   
