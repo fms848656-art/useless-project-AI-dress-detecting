@@ -23,7 +23,7 @@ This site is used to judge your outfit of the day, we don't want to go out looki
 ### The Solution (that nobody asked for)
 Nobody wanted a website, no one actually takes their phone go to google and search for our website while they are busy heading out. So actually this website is pointless.
 
-## Project Link 
+## Project Link : https://fms848656-art.github.io/useless-project-AI-dress-detecting/
 
 ## Technical Details
 ### Technologies/Components Used
@@ -40,9 +40,6 @@ For Software:
 
 ### Implementation
 For Software: frontened devolepment, AI integration
-
-# Run
-just run the index.html file
 
 # Screenshots 
 <img width="3188" height="1202" alt="image" src="https://github.com/user-attachments/assets/e122ed1d-8d94-4cc0-89a7-4f746b7fdfbd" />
