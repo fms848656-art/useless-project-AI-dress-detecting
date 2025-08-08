@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>AI Outfit Judge — Colorful Emoji Edition</title>
+    <style>
+        :root {
+            --card: #0b1220;
+            --muted: #d1d5db;
+            --accent: #a855f7;
+            --good: #22c55e;
+            --bad: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e6eef8;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            padding: 24px;
+            overflow: hidden;
+            background: linear-gradient(270deg, #ff6ec4, #7873f5, #4ade80, #facc15);
+            background-size: 800% 800%;
+            animation: gradientShift 18s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Floating smiley emojis */
+        .emoji {
+            position: fixed;
+            top: -50px;
+            font-size: 32px;
+            animation: fall linear forwards;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .card {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 880px;
+            background: rgba(0, 0, 0, 0.65);
+            border-radius: 16px;
+            padding: 22px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        .left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .title {
+            width: 100%;
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .title h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.3px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .uploader {
+            width: 100%;
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .uploader input[type=file] {
+            display: none;
+        }
+
+        .uploader .btn {
+            background: linear-gradient(90deg, var(--accent), #4f46e5);
+            border: none;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(92, 33, 255, 0.2);
+        }
+
+        .preview {
+            width: 330px;
+            height: 420px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: linear-gradient(180deg, #1e293b, #0f172a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .preview img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+
+        .meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .right {
+            padding: 6px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .result {
+            height: 160px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .score {
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .actions button {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.08);
+            color: inherit;
+        }
+
+        .snark {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 10px;
+            color: var(--muted);
+            font-size: 13px;
+            min-height: 90px;
+        }
+
+        .verdict-emoji {
+            font-size: 48px;
+            transition: transform .4s cubic-bezier(.2, .9, .2, 1);
+        }
+
+        .nice {
+            color: var(--good);
+        }
+
+        .burn {
+            color: var(--bad);
+            transform: rotate(-8deg) scale(1.06);
+        }
+
+        footer {
+            grid-column: 1 / -1;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: right;
+        }
+
+        @media (max-width:880px) {
+            .card {
+                grid-template-columns: 1fr;
+            }
+
+            .preview {
+                width: 100%;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card" role="main">
+        <div class="title">
+            <div>
+                <h1>👗 AI Outfit Judge</h1>
+                <div class="subtitle">Upload a selfie (or outfit pic). The AI will say <strong>"Nice"</strong> or
+                    <strong>"Burn it"</strong>.</div>
+            </div>
+            <div style="text-align:right;color:var(--muted);font-size:13px">Frontend-only demo — with falling smileys 🎉
+            </div>
+        </div>
+
+        <div class="left">
+            <div class="uploader">
+                <label for="fileInput" class="btn" id="chooseBtn">📤 Choose Image</label>
+                <input id="fileInput" type="file" accept="image/*" />
+                <div style="font-size:13px;color:var(--muted)">Tip: full-body or waist-up works best</div>
+            </div>
+            <div class="preview" id="previewBox">
+                <div id="previewText">No image selected</div>
+            </div>
+            <div class="meta" id="imageMeta">Image info: —</div>
+        </div>
+
+        <div class="right">
+            <div class="result" id="resultBox">
+                <div class="verdict-emoji" id="emoji">🤖</div>
+                <div id="verdictText">Upload an image & press "Judge"</div>
+                <div class="score" id="scoreText"></div>
+            </div>
+            <div class="actions">
+                <button id="judgeBtn">🧠 Judge My Outfit</button>
+                <button id="retryBtn">🔁 Reconsider</button>
+                <button id="copyBtn">📋 Copy Verdict</button>
+                <button id="downloadBtn">⬇️ Download</button>
+            </div>
+            <div class="snark" id="snark">Ready to be brutally honest.</div>
+        </div>
+        <footer>Made for a hackathon — proudly useless.</footer>
+    </div>
+
+    <!-- Hidden canvas -->
+    <canvas id="workCanvas" style="display:none"></canvas>
+
+    <script>
+        // Same fake AI logic as before
+        const fileInput = document.getElementById('fileInput');
+        const previewBox = document.getElementById('previewBox');
+        const previewText = document.getElementById('previewText');
+        const imageMeta = document.getElementById('imageMeta');
+        const judgeBtn = document.getElementById('judgeBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const verdictText = document.getElementById('verdictText');
+        const scoreText = document.getElementById('scoreText');
+        const snark = document.getElementById('snark');
+        const emoji = document.getElementById('emoji');
+        const canvas = document.getElementById('workCanvas');
+        const ctx = canvas.getContext('2d');
+        let currentImage = null, lastResult = null;
+
+        function computeColorfulness(imageData) {
+            const data = imageData.data, n = data.length / 4;
+            let rgArr = new Float64Array(n), ybArr = new Float64Array(n), idx = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i + 1], b = data[i + 2];
+                rgArr[idx] = r - g;
+                ybArr[idx] = 0.5 * (r + g) - b;
+                idx++;
+            }
+            const mean = arr => arr.reduce((a, b) => a + b) / arr.length;
+            const stddev = (arr, m) => Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / arr.length);
+            const mean_rg = mean(rgArr), mean_yb = mean(ybArr);
+            const std_rg = stddev(rgArr, mean_rg), std_yb = stddev(ybArr, mean_yb);
+            const colorfulness = Math.sqrt(std_rg ** 2 + std_yb ** 2) + 0.3 * Math.sqrt(mean_rg ** 2 + mean_yb ** 2);
+            return Math.tanh(colorfulness / 40);
+        }
+        function computeBrightness(imageData) {
+            const data = imageData.data; let total = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                total += 0.2126 * data[i] + 0.7152 * data[i + 1] + 0.0722 * data[i + 2];
+            }
+            return (total / (data.length / 4)) / 255;
+        }
+
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                currentImage = img;
+                previewBox.innerHTML = `<img src="${img.src}">`;
+                imageMeta.textContent = `File: ${file.name} — ${img.width}×${img.height}px`;
+                verdictText.textContent = 'Ready. Press "Judge"';
+                scoreText.textContent = '';
+                emoji.textContent = '🤖'; emoji.className = 'verdict-emoji';
+                snark.textContent = 'This AI has strong opinions.';
+                lastResult = null;
+                URL.revokeObjectURL(url);
+            };
+            img.src = url;
+        });
+
+        judgeBtn.addEventListener('click', () => {
+            if (!currentImage) return alert('Choose an image first.');
+            const MAX = 400, scale = Math.min(1, MAX / Math.max(currentImage.width, currentImage.height));
+            const w = Math.round(currentImage.width * scale), h = Math.round(currentImage.height * scale);
+            canvas.width = w; canvas.height = h; ctx.drawImage(currentImage, 0, 0, w, h);
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const c = computeColorfulness(imgData), b = computeBrightness(imgData);
+            let score = 0.55 * c + 0.25 * b - Math.abs(b - 0.55) * 0.4 + (Math.random() - 0.5) * 0.15;
+            score = Math.max(0, Math.min(1, score));
+            const verdict = score >= 0.5 ? 'Nice' : 'Burn it';
+            const emojiChar = verdict === 'Nice' ? '✨' : '🔥';
+            const commentsNice = ["Solid fit.", "Audience: applause.", "Wear this out.", "Color coordination on point."];
+            const commentsBurn = ["Did you lose a bet?", "Fashion crime scene.", "Fire extinguisher needed.", "Bold... too bold."];
+            const comment = (verdict === 'Nice' ? commentsNice : commentsBurn)[Math.floor(Math.random() * 4)];
+            verdictText.textContent = verdict; scoreText.textContent = `AI score: ${(score * 100).toFixed(0)}%`;
+            emoji.textContent = emojiChar; emoji.className = verdict === 'Nice' ? 'verdict-emoji nice' : 'verdict-emoji burn';
+            snark.textContent = comment; lastResult = { verdict, score, comment };
+        });
+
+        retryBtn.addEventListener('click', () => { if (currentImage) judgeBtn.click(); });
+        copyBtn.addEventListener('click', () => {
+            if (!lastResult) return alert('No verdict yet.');
+            navigator.clipboard.writeText(`AI Outfit Judge — ${lastResult.verdict}\nScore: ${(lastResult.score * 100).toFixed(0)}%\nNote: ${lastResult.comment}`);
+        });
+        downloadBtn.addEventListener('click', () => {
+            if (!currentImage) return alert('Choose image first.');
+            const W = currentImage.width, H = currentImage.height;
+            const dlCanvas = document.createElement('canvas'); dlCanvas.width = W; dlCanvas.height = H;
+            const dctx = dlCanvas.getContext('2d'); dctx.drawImage(currentImage, 0, 0, W, H);
+            dctx.fillStyle = 'rgba(0,0,0,0.4)'; dctx.fillRect(0, H - 140, W, 140);
+            dctx.fillStyle = 'white'; dctx.font = `${Math.max(24, W / 18)}px sans-serif`; dctx.fillText(`${lastResult.verdict} — ${(lastResult.score * 100).toFixed(0)}%`, 24, H - 78);
+            dctx.font = '18px sans-serif'; dctx.fillText(lastResult.comment, 24, H - 40);
+            const a = document.createElement('a'); a.href = dlCanvas.toDataURL('image/png'); a.download = 'outfit_verdict.png'; a.click();
+        });
+
+        document.getElementById('chooseBtn').addEventListener('click', () => fileInput.click());
+
+        // Falling emoji spawner
+        const smileys = ["😊", "😎", "😂", "😍", "🤩", "😜", "😁", "😏", "🙃", "😇"];
+        function spawnEmoji() {
+            const emojiEl = document.createElement('div');
+            emojiEl.className = 'emoji';
+            emojiEl.textContent = smileys[Math.floor(Math.random() * smileys.length)];
+            emojiEl.style.left = Math.random() * 100 + "vw";
+            emojiEl.style.fontSize = (20 + Math.random() * 30) + "px";
+            emojiEl.style.animationDuration = (5 + Math.random() * 5) + "s";
+            document.body.appendChild(emojiEl);
+            setTimeout(() => emojiEl.remove(), 10000);
+        }
+        setInterval(spawnEmoji, 500);
+
+    </script>
+</body> 
+</html>
