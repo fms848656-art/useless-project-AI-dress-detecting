@@ -46,15 +46,13 @@ just run the index.html file
 ### Project Documentation
 For Software:
 
-# Screenshots (Add at least 3)
-<img src="![Screenshot_8-8-2025_15046_127 0 0 1](https://github.com/user-attachments/assets/4912a052-b5d1-420c-a814-9aaf58ee604d)
-">
-*this is our project's frontpage that outlines our whole project...this contains specific detailation of our project like outfit verification and concluding whether it is appropriate or not to wear and hence giving the user an amount of confidence.*
+# Screenshots 
+<img width="3188" height="1202" alt="frame (3)" src="<img width="1600" height="955" alt="image" src="https://github.com/user-attachments/assets/e122ed1d-8d94-4cc0-89a7-4f746b7fdfbd" />
+this is our project's frontpage that outlines our whole project...this contains specific detailation of our project like outfit verification and concluding whether it is appropriate or not to wear and hence giving the user an amount of confidence.
 
-<img src="![Screenshot_8-8-2025_15217_127 0 0 1](https://github.com/user-attachments/assets/bfcb1edc-1e69-4ef8-8e5f-bd6e3cafb773)
-">
-*this image shows the proper reply of our AI by using 'burn it' or 'nice'....It gives user a certain courage and creates an urge to use the app again*
----
+<img src="<img width="1600" height="955" alt="image" src="https://github.com/user-attachments/assets/b21fcc6b-9744-4009-ac8d-5549d9900b49" />
+this image shows the proper reply of our AI by using 'burn it' or 'nice'....It gives user a certain courage and creates an urge to use the app again
+
 Made with ❤️ at TinkerHub Useless Projects 
 
 ![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
