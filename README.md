@@ -11,7 +11,6 @@
 ### Team Members
 - Team Lead: Adithya A - GECI
 - Member 2: Fathima MS - GECI
-- Member 3: [Name] - GECI
 
 ### Project Description
 The **AI Dress Detector** is a machine learning–powered application that can automatically identify and classify clothing items from images.  
@@ -23,6 +22,8 @@ This site is used to judge your outfit of the day, we don't want to go out looki
 
 ### The Solution (that nobody asked for)
 Nobody wanted a website, no one actually takes their phone go to google and search for our website while they are busy heading out. So actually this website is pointless.
+
+## Project Link 
 
 ## Technical Details
 ### Technologies/Components Used
